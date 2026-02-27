@@ -1,0 +1,78 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+# Alerting configuration (можно добавить позже)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Правила для алертов (опционально)
+rule_files:
+  - "alerts.yml"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+          environment: 'production'
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          service: 'system'
+          component: 'host'
+
+  - job_name: 'postgres-exporter'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'database'
+          component: 'postgresql'
+
+  - job_name: 'nginx-exporter'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+        labels:
+          service: 'web'
+          component: 'nginx'
+
+  - job_name: 'nginx-status'
+    metrics_path: /nginx_status
+    static_configs:
+      - targets: ['nginx:81']
+        labels:
+          service: 'web'
+          component: 'nginx-direct'
+
+  # Если добавите метрики из Flask приложения
+  - job_name: 'flask-app'
+    static_configs:
+      - targets: ['flask:8000']
+        labels:
+          service: 'application'
+          component: 'flask'
+    metrics_path: /metrics
+    scheme: http
+    scrape_interval: 10s
+
+  # Для Redis (если добавите redis-exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'cache'
+          component: 'redis'
+
+  # Мониторинг Docker контейнеров (опционально)
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['docker-exporter:9323']
+        labels:
+          service: 'infrastructure'
+          component: 'docker'
