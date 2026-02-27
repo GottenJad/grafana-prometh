@@ -71,7 +71,7 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "90:80"
+      - "89:81"
       - "91:81"  # Порт для метрик nginx
     volumes:
       # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
